@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Chat</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <div class="app-layout">
+    <aside class="sidebar">
+      <div class="current-user-card">
+        <div class="avatar" id="my-avatar">?</div>
+        <div class="user-meta">
+          <div class="meta-label">Logged in as</div>
+          <div class="user-name" id="my-name">Selecting...</div>
+        </div>
+        <button class="btn-ghost" id="switch-user-btn" type="button">Switch</button>
+      </div>
+
+      <div class="sidebar-header">
+        <span class="sidebar-title">Conversations</span>
+        <button class="btn-primary-sm" id="new-user-btn" type="button">+ User</button>
+      </div>
+
+      <div class="contact-list" id="contact-list"></div>
+    </aside>
+
+    <main class="chat-area">
+      <div class="empty-state" id="empty-state">
+        <div class="empty-icon">💬</div>
+        <h3>Select a conversation</h3>
+        <p>Pick a user from the left to start messaging in real-time.</p>
+      </div>
+
+      <div class="chat-view hidden" id="chat-view">
+        <header class="chat-header">
+          <div class="avatar" id="active-avatar">?</div>
+          <div class="chat-header-info">
+            <div class="chat-title" id="active-name">User</div>
+            <div class="chat-subtitle" id="active-status">Active now</div>
+          </div>
+          <button class="btn-icon" id="refresh-chat-btn" title="Refresh conversation" type="button">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M23 4v6h-6"></path>
+              <path d="M1 20v-6h6"></path>
+              <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+            </svg>
+          </button>
+        </header>
+
+        <div class="messages-container" id="messages-container"></div>
+
+        <form class="input-bar" id="message-form">
+          <input
+            type="text"
+            id="message-input"
+            placeholder="Type a message..."
+            autocomplete="off"
+            required
+          />
+          <button type="submit" class="btn-send" id="send-btn" title="Send message">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor">
+              <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
+            </svg>
+          </button>
+        </form>
+      </div>
+    </main>
+  </div>
+
+  <div class="modal-backdrop hidden" id="user-modal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3>Select Profile</h3>
+        <button class="btn-close" id="modal-close-btn" type="button">&times;</button>
+      </div>
+      <p class="modal-desc">Choose who you want to send messages as in this browser:</p>
+      <div class="user-options" id="user-options"></div>
+      <div class="modal-divider"><span>or create new user</span></div>
+      <form class="create-user-form" id="create-user-form">
+        <input type="text" id="new-user-name" placeholder="Enter name (e.g. Dan)" required />
+        <button type="submit" class="btn-primary">Add & Select</button>
+      </form>
+    </div>
+  </div>
+
+  <footer class="footer-note">
+    Demo only. There is no login. Anyone can pick any user and act as them. This is not impersonation-safe and is not a production app.
+  </footer>
+
+  <script src="/app.js"></script>
+</body>
+</html>

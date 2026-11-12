@@ -1,0 +1,11 @@
+node_modules
+dist
+.env
+.tools
+*.log
+artifacts
+test-results
+playwright-report
+blob-report
+*service-account*.json
+credentials.json

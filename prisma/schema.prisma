@@ -1,0 +1,34 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(uuid()) @db.Uuid
+  name      String?
+  createdAt DateTime @default(now()) @map("created_at")
+
+  chatsLow  Chat[] @relation("ChatUserLow")
+  chatsHigh Chat[] @relation("ChatUserHigh")
+
+  @@map("users")
+}
+
+model Chat {
+  id         String   @id @default(uuid()) @db.Uuid
+  userLowId  String   @map("user_low_id") @db.Uuid
+  userHighId String   @map("user_high_id") @db.Uuid
+  createdAt  DateTime @default(now()) @map("created_at")
+
+  userLow  User @relation("ChatUserLow", fields: [userLowId], references: [id])
+  userHigh User @relation("ChatUserHigh", fields: [userHighId], references: [id])
+
+  @@unique([userLowId, userHighId])
+  @@index([userLowId])
+  @@index([userHighId])
+  @@map("chats")
+}
