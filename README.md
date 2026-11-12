@@ -46,3 +46,10 @@ Open http://127.0.0.1:3000 in your browser.
 4. Copy your **Project ID** from the *General* tab for `FIREBASE_PROJECT_ID`.
 5. Head to the **Service accounts** tab, select **Node.js**, and click **Generate new private key**.
 6. Save the downloaded file as `service-account.json` in this project folder and set its path in `GOOGLE_APPLICATION_CREDENTIALS`.
+
+
+## Architecture Note: WebSockets vs. REST
+
+Per the assignment specification, the backend is designed strictly around the 6 requested HTTP/REST endpoints rather than persistent WebSockets. 
+In a production environment where REST constraints do not apply, WebSockets (or Socket.io) could be used to provide direct push delivery and connection-level channel isolation.
+

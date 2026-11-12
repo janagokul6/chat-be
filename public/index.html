@@ -20,17 +20,27 @@
 
       <div class="sidebar-header">
         <span class="sidebar-title">Conversations</span>
-        <button class="btn-primary-sm" id="new-user-btn" type="button">+ User</button>
+        <div class="sidebar-actions">
+          <button class="btn-primary-sm" id="new-group-btn" type="button">+ Group</button>
+          <button class="btn-primary-sm" id="new-user-btn" type="button">+ User</button>
+        </div>
       </div>
 
-      <div class="contact-list" id="contact-list"></div>
+      <div class="sidebar-scroll">
+        <div id="groups-section" class="hidden">
+          <div class="section-label">Groups</div>
+          <div class="contact-list" id="group-list"></div>
+        </div>
+        <div class="section-label">Direct Messages</div>
+        <div class="contact-list" id="contact-list"></div>
+      </div>
     </aside>
 
     <main class="chat-area">
       <div class="empty-state" id="empty-state">
         <div class="empty-icon">💬</div>
         <h3>Select a conversation</h3>
-        <p>Pick a user from the left to start messaging in real-time.</p>
+        <p>Pick a person or group from the left to start messaging.</p>
       </div>
 
       <div class="chat-view hidden" id="chat-view">
@@ -40,13 +50,23 @@
             <div class="chat-title" id="active-name">User</div>
             <div class="chat-subtitle" id="active-status">Active now</div>
           </div>
-          <button class="btn-icon" id="refresh-chat-btn" title="Refresh conversation" type="button">
-            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M23 4v6h-6"></path>
-              <path d="M1 20v-6h6"></path>
-              <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
-            </svg>
-          </button>
+          <div class="header-actions">
+            <button class="btn-icon hidden" id="manage-group-btn" title="Manage group" type="button">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                <circle cx="9" cy="7" r="4"></circle>
+                <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+              </svg>
+            </button>
+            <button class="btn-icon" id="refresh-chat-btn" title="Refresh conversation" type="button">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M23 4v6h-6"></path>
+                <path d="M1 20v-6h6"></path>
+                <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+              </svg>
+            </button>
+          </div>
         </header>
 
         <div class="messages-container" id="messages-container"></div>
@@ -82,6 +102,43 @@
         <input type="text" id="new-user-name" placeholder="Enter name (e.g. Dan)" required />
         <button type="submit" class="btn-primary">Add & Select</button>
       </form>
+    </div>
+  </div>
+
+  <div class="modal-backdrop hidden" id="group-modal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3>Create Group</h3>
+        <button class="btn-close" id="group-modal-close-btn" type="button">&times;</button>
+      </div>
+      <p class="modal-desc">You are included automatically. Select 1 or 2 people to join (max 3 total):</p>
+      <form id="create-group-form">
+        <input type="text" id="group-name-input" class="modal-input" placeholder="Group name (e.g. Project Team)" required />
+        <div class="user-options" id="group-member-options"></div>
+        <button type="submit" class="btn-primary full-width">Create Group</button>
+      </form>
+    </div>
+  </div>
+
+  <div class="modal-backdrop hidden" id="manage-group-modal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3>Group Settings</h3>
+        <button class="btn-close" id="manage-modal-close-btn" type="button">&times;</button>
+      </div>
+      <form id="rename-group-form" class="create-user-form" style="margin-bottom: 1rem;">
+        <input type="text" id="rename-group-input" placeholder="Group name" required />
+        <button type="submit" class="btn-primary">Rename</button>
+      </form>
+      <div class="section-label" style="padding: 0 0 0.5rem;">Members (Max 3)</div>
+      <div class="user-options" id="manage-members-list"></div>
+      <div id="add-member-section">
+        <div class="modal-divider"><span>add member</span></div>
+        <div class="create-user-form">
+          <select id="add-member-select" class="modal-select"></select>
+          <button type="button" class="btn-primary" id="add-member-btn">Add</button>
+        </div>
+      </div>
     </div>
   </div>
 

@@ -1,6 +1,6 @@
 import { FieldPath, FieldValue, Timestamp, type DocumentData, type QueryDocumentSnapshot } from "firebase-admin/firestore";
 import { firestore } from "./firestore";
-import { notFound } from "./errors";
+import { forbidden, notFound } from "./errors";
 
 export type Receipt = {
   userId: string;
@@ -19,6 +19,7 @@ export type Message = {
   senderId: string;
   text: string;
   createdAt: string | null;
+  editedAt?: string | null;
   readBy: Receipt[];
 };
 
@@ -47,6 +48,7 @@ function serializeMessage(id: string, data: DocumentData, readBy: Receipt[] = []
     senderId: data.senderId as string,
     text: data.text as string,
     createdAt: toIso(data.createdAt),
+    editedAt: toIso(data.editedAt),
     readBy,
   };
 }
@@ -162,4 +164,46 @@ export async function updateLastSeen(chatId: string, userId: string, messageId: 
     messageId,
     updatedAt: toIso(snap.data()?.updatedAt),
   };
+}
+
+export async function editMessage(chatId: string, messageId: string, senderId: string, text: string) {
+  const ref = messagesCol(chatId).doc(messageId);
+  const snap = await ref.get();
+  if (!snap.exists) {
+    throw notFound("Message");
+  }
+  const data = snap.data();
+  if (!data) {
+    throw notFound("Message");
+  }
+  if (data.senderId !== senderId) {
+    throw forbidden("Cannot edit another user's message");
+  }
+
+  await ref.update({
+    text,
+    editedAt: FieldValue.serverTimestamp(),
+  });
+
+  const updated = await ref.get();
+  const receipts = await listReceipts(chatId);
+  const readBy = receipts.filter((r) => r.messageId === messageId);
+  return serializeMessage(updated.id, updated.data()!, readBy);
+}
+
+export async function deleteMessage(chatId: string, messageId: string, senderId: string) {
+  const ref = messagesCol(chatId).doc(messageId);
+  const snap = await ref.get();
+  if (!snap.exists) {
+    throw notFound("Message");
+  }
+  const data = snap.data();
+  if (!data) {
+    throw notFound("Message");
+  }
+  if (data.senderId !== senderId) {
+    throw forbidden("Cannot delete another user's message");
+  }
+
+  await ref.delete();
 }

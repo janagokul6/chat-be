@@ -8,27 +8,34 @@ datasource db {
 }
 
 model User {
-  id        String   @id @default(uuid()) @db.Uuid
-  name      String?
-  createdAt DateTime @default(now()) @map("created_at")
-
-  chatsLow  Chat[] @relation("ChatUserLow")
-  chatsHigh Chat[] @relation("ChatUserHigh")
+  id          String       @id @default(uuid()) @db.Uuid
+  name        String?
+  createdAt   DateTime     @default(now()) @map("created_at")
+  memberships ChatMember[]
 
   @@map("users")
 }
 
 model Chat {
-  id         String   @id @default(uuid()) @db.Uuid
-  userLowId  String   @map("user_low_id") @db.Uuid
-  userHighId String   @map("user_high_id") @db.Uuid
-  createdAt  DateTime @default(now()) @map("created_at")
+  id        String       @id @default(uuid()) @db.Uuid
+  name      String?
+  isGroup   Boolean      @default(false) @map("is_group")
+  pairKey   String?      @unique @map("pair_key")
+  createdAt DateTime     @default(now()) @map("created_at")
+  members   ChatMember[]
 
-  userLow  User @relation("ChatUserLow", fields: [userLowId], references: [id])
-  userHigh User @relation("ChatUserHigh", fields: [userHighId], references: [id])
-
-  @@unique([userLowId, userHighId])
-  @@index([userLowId])
-  @@index([userHighId])
   @@map("chats")
+}
+
+model ChatMember {
+  chatId   String   @map("chat_id") @db.Uuid
+  userId   String   @map("user_id") @db.Uuid
+  joinedAt DateTime @default(now()) @map("joined_at")
+
+  chat Chat @relation(fields: [chatId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([chatId, userId])
+  @@index([userId])
+  @@map("chat_members")
 }
